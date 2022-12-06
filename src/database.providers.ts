@@ -12,7 +12,8 @@ export const databaseProviders = [
             password: 'docker',
             database: 'postgres',
             entities: [
-                __dirname + '/../**/*.entity{.ts,.js}',
+              './entities/*.entity.ts'
+                //__dirname + '/../**/*.entity{.ts,.js}',
             ],
             synchronize: true,
             logging: true,
