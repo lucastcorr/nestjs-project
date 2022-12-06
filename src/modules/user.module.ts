@@ -10,5 +10,6 @@ import { DatabaseModule } from './database.module';
     providers: [
         ...userProviders,
         UserService],
+    exports: [UserService],
 })
 export class UserModule {}
