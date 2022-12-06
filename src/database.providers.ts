@@ -1,4 +1,7 @@
 import { DataSource } from "typeorm";
+import { Transaction } from "./entities/transaction.entity";
+import { User } from "./entities/user.entity";
+import { Wallet } from "./entities/wallet.entity";
 
 export const databaseProviders = [
     {
@@ -11,10 +14,8 @@ export const databaseProviders = [
             username: 'postgres',
             password: 'docker',
             database: 'postgres',
-            entities: [
-              './entities/*.entity.ts'
-                //__dirname + '/../**/*.entity{.ts,.js}',
-            ],
+            entities: [User, Transaction, Wallet],
+            migrations: [],
             synchronize: true,
             logging: true,
           });
