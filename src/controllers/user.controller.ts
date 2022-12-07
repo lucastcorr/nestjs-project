@@ -1,11 +1,13 @@
 import { Controller, Delete, Get, Patch, Post, UseGuards, Request } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
-import { LocalAuthGuard } from 'src/auth/local-auth.guard';
+import { AuthService } from 'src/auth/auth.service';
 import { UserService } from 'src/services/user.service';
 
 @Controller('user')
 export class UserController {
-    constructor(private readonly userService: UserService) {}
+    constructor(
+        private readonly userService: UserService,
+        // private readonly authService: AuthService
+        ) {}
 
     @Get()
     findAll() {
@@ -17,11 +19,7 @@ export class UserController {
     //     return this.userService.findOne();
     // }
 
-    @UseGuards(/* before local-auth.guard: AuthGuard('local')*/ LocalAuthGuard)
-    @Post('auth/login')
-    async login(@Request() req) {
-        return req.user;
-    }
+    
 
     @Post()
     create() {
