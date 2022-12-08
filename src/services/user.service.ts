@@ -25,15 +25,30 @@ export class UserService {
     ]
 
     findAll() {
-        return 'Retorno de todos os usuários';
+        return this.userRepository.find();
     }
 
-    async findOne(username: string)/*: Promise<User | undefined>*/{
-        // return this.userRepository.findBy(username);
-        // return this.users.find(user => user.username === username);
+    async findByUsername(username: string)/*: Promise<User | undefined>*/{
+        const user = await this.userRepository.findOne({
+            where: { username },
+        });
+
+        return {
+            ...user,
+        };
     }
 
     async create(createUserDto: CreateUserDto) {
+        const { username } = createUserDto;
+        
+        const alreadyExists = await this.userRepository.findOne({
+            where: { username },
+        });
+
+        if (alreadyExists) {
+            return `User ${username} already exists!`;
+        }
+
         const user = {
             ...createUserDto,
             password: await bcrypt.hash(createUserDto.password, 10)

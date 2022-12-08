@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { APP_GUARD } from '@nestjs/core';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { UserModule } from 'src/modules/user.module';
@@ -21,11 +20,6 @@ import { LocalStrategy } from './local.strategy';
   providers: [AuthService,
     LocalStrategy,
     JwtStrategy,
-    {
-      // Here i define guards as global
-      provide: APP_GUARD,
-      useClass: JwtAuthGuard,
-    }
   ],
   exports: [AuthService],
 })

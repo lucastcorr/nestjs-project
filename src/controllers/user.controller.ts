@@ -14,12 +14,10 @@ export class UserController {
         return this.userService.findAll();
     }
 
-    // @Get('one')
-    // findOne() {
-    //     return this.userService.findOne();
-    // }
-
-    
+    @Get()
+    findByUsername(@Body() username: string) {
+         return this.userService.findByUsername(username);
+    }
 
     @Post()
     create(@Body() createUserDto: CreateUserDto) {
