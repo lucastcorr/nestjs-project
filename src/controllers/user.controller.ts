@@ -1,5 +1,5 @@
-import { Controller, Delete, Get, Patch, Post, UseGuards, Request } from '@nestjs/common';
-import { AuthService } from 'src/auth/auth.service';
+import { Controller, Delete, Get, Patch, Post, UseGuards, Request, Body } from '@nestjs/common';
+import { CreateUserDto } from 'src/dtos/create-user.dto';
 import { UserService } from 'src/services/user.service';
 
 @Controller('user')
@@ -22,8 +22,8 @@ export class UserController {
     
 
     @Post()
-    create() {
-        return this.userService.create();
+    create(@Body() createUserDto: CreateUserDto) {
+        return this.userService.create(createUserDto);
     }
 
     @Patch()
