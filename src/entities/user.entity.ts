@@ -1,4 +1,6 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { BeforeInsert, Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { v4 as uuidv4 } from 'uuid';
+import { Wallet } from "./wallet.entity";
 
 @Entity('users')
 export class User {
@@ -6,14 +8,31 @@ export class User {
     id: string;
 
     @Column()
-    password: string;
-
-    @Column()
-    username: string;
+    username: string;  
 
     @Column()
     email: string;
 
     @Column()
+    twoFactorAuth: string;
+
+    @Column()
+    password: string;
+
+    @Column()
     phoneNumber: string;
+
+    
+
+    @BeforeInsert()
+    generatedId() {
+        if (this.id) {
+            return;
+        }
+
+        this.id = uuidv4();
+    }
+
+    @OneToMany(() => Wallet, (wallet) => wallet.user)
+    wallets: Wallet[];
 }

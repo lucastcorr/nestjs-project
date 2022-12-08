@@ -6,7 +6,7 @@ import { WalletModule } from './modules/wallet.module';
 import { UserModule } from './modules/user.module';
 import { AuthModule } from './auth/auth.module';
 import { APP_GUARD } from '@nestjs/core';
-import { JwtAuthGuard } from './auth/jwt-auth.guard';
+import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 
 @Module({
   imports: [UserModule, WalletModule, TransactionModule, AuthModule],

@@ -12,14 +12,6 @@ export class AuthService {
 
     async validateUser(username: string, password: string)/*: Promise<any> */{
         const user = await this.userService.findByUsername(username);
-        
-        // Versão default da documentação
-        // if (user && user.password === password) {
-        //     const { password, ...result } = user;
-        //     return result;
-        // }
-
-        // Versão utilizando a hash do bcrypt
 
         const isPasswordValid = await bcrypt.compare(password, user.password);
         
