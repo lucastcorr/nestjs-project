@@ -1,10 +1,10 @@
-import { BeforeInsert, Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { BeforeInsert, Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { v4 as uuidv4 } from 'uuid';
 import { Wallet } from "./wallet.entity";
 
 @Entity('transactions')
 export class Transaction {
-    @PrimaryGeneratedColumn()
+    @PrimaryGeneratedColumn('uuid')
     id: string;
 
     @Column()
@@ -19,12 +19,14 @@ export class Transaction {
     @Column()
     amount: number;
 
+    @CreateDateColumn()
+    createdAt: Date;
+
     @BeforeInsert()
     generatedId() {
         if (this.id) {
             return;
         }
-
         this.id = uuidv4();
     }
 

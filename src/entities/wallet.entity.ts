@@ -5,7 +5,7 @@ import { User } from "./user.entity";
 
 @Entity('wallets')
 export class Wallet {
-    @PrimaryGeneratedColumn()
+    @PrimaryGeneratedColumn('uuid')
     id: string;
 
     @Column()
@@ -22,7 +22,6 @@ export class Wallet {
         if (this.id) {
             return;
         }
-
         this.id = uuidv4();
     }
 

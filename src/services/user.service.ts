@@ -25,29 +25,33 @@ export class UserService {
 
 
     async createUser1(firstStepRegistrationDto: FirstStepRegistrationDto) {
-        const { username, email } = firstStepRegistrationDto;
+        // const { username, email } = firstStepRegistrationDto;
         
-        const userAlreadyExists = await this.userRepository.findOne({
-            where: { username },
-        });
+        // const userAlreadyExists = await this.userRepository.findOne({
+        //     where: { username },
+        // });
 
-        if (userAlreadyExists) {
-            return `User ${username} already exists.`;
-        }
+        // if (userAlreadyExists) {
+        //     return `User ${username} already exists.`;
+        // }
 
-        const emailAlreadyExists = await this.userRepository.findOne({
-            where: { email },
-        });
+        // const emailAlreadyExists = await this.userRepository.findOne({
+        //     where: { email },
+        // });
 
-        if (emailAlreadyExists) {
-            return `User ${email} already exists.`;
-        }
+        // if (emailAlreadyExists) {
+        //     return `User ${email} already exists.`;
+        // }
 
-        const user = {
-            ...firstStepRegistrationDto,
-        }
+        // const user = {
+        //     ...firstStepRegistrationDto,
+        // }
 
-        return this.userRepository.save(user);
+        const user = firstStepRegistrationDto;
+
+        this.userRepository.save(user);
+
+        // 2fa
     }
 
     async createUser2(secondStepRegistrationDto: SecondtStepRegistrationDto) {

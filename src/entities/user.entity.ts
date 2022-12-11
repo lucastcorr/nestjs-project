@@ -1,4 +1,4 @@
-import { BeforeInsert, Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { BeforeInsert, Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { v4 as uuidv4 } from 'uuid';
 import { Wallet } from "./wallet.entity";
 
@@ -7,10 +7,10 @@ export class User {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
-    @Column()
+    @Column({unique: true})
     username: string;  
 
-    @Column()
+    @Column({unique: true})
     email: string;
 
     @Column()
@@ -22,14 +22,14 @@ export class User {
     @Column()
     phoneNumber: string;
 
-    
+    @CreateDateColumn()
+    createdAt: Date;
 
     @BeforeInsert()
     generatedId() {
         if (this.id) {
             return;
         }
-
         this.id = uuidv4();
     }
 
