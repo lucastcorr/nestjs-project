@@ -1,7 +1,10 @@
-import { Controller, Delete, Get, Patch, Post, UseGuards, Request, Body } from '@nestjs/common';
+import { Controller, Delete, Get, Patch, Post, Body } from '@nestjs/common';
 import { IsPublic } from 'src/auth/decorators';
-import { FirstStepRegistrationDto } from 'src/dtos/first-step-registration.dto';
-import { SecondtStepRegistrationDto } from 'src/dtos/second-step-registration.dto';
+import { ChangeEmailDto } from 'src/dtos/user/change-email.dto';
+import { ChangePasswordDto } from 'src/dtos/user/change-password.dto';
+import { DeleteUserDto } from 'src/dtos/user/delete-user.dto';
+import { FirstStepRegistrationDto } from 'src/dtos/user/first-step-registration.dto';
+import { SecondtStepRegistrationDto } from 'src/dtos/user/second-step-registration.dto';
 import { UserService } from 'src/services/user.service';
 
 @Controller('user')
@@ -17,28 +20,35 @@ export class UserController {
 
 
     @IsPublic()
-    @Post()
+    @Post('register')
     create1(@Body() firstStepRegistrationDto: FirstStepRegistrationDto) {
-        return this.userService.create1(firstStepRegistrationDto);
+        return this.userService.createUser1(firstStepRegistrationDto);
     }
 
 
     @IsPublic()
-    @Post()
+    @Post('register/validate')
     create2(@Body() secondStepRegistrationDto: SecondtStepRegistrationDto) {
-        return this.userService.create2(secondStepRegistrationDto);
+        return this.userService.createUser2(secondStepRegistrationDto);
     }
 
 
-    @Patch()
-    update() {
-        return this.userService.update();
+    @Patch('/change/password')
+    updatePassword(@Body() changePasswordDto: ChangePasswordDto) {
+        return this.userService.changePassword(changePasswordDto);
     }
 
+
+    @Patch('/change/email')
+    updateEmail(@Body() ChangeEmailDto: ChangeEmailDto) {
+        return this.userService.changeEmail(ChangeEmailDto);
+    }
     
+
+    @IsPublic()
     @Delete()
-    delete() {
-        return this.userService.delete();
+    delete(@Body() deleteUserDto: DeleteUserDto) {
+        return this.userService.deleteUser(deleteUserDto);
     }
 
     

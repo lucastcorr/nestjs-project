@@ -1,9 +1,12 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { User } from 'src/entities/user.entity';
 import { Repository } from 'typeorm';
-import * as bcrypt from 'bcrypt'
-import { FirstStepRegistrationDto } from 'src/dtos/first-step-registration.dto';
-import { SecondtStepRegistrationDto } from 'src/dtos/second-step-registration.dto';
+import * as bcrypt from 'bcrypt';
+import { DeleteUserDto } from 'src/dtos/user/delete-user.dto';
+import { SecondtStepRegistrationDto } from 'src/dtos/user/second-step-registration.dto';
+import { FirstStepRegistrationDto } from 'src/dtos/user/first-step-registration.dto';
+import { ChangePasswordDto } from 'src/dtos/user/change-password.dto';
+import { ChangeEmailDto } from 'src/dtos/user/change-email.dto';
 
 @Injectable()
 export class UserService {
@@ -21,36 +24,44 @@ export class UserService {
     }
 
 
-    async create1(firstStepRegistrationDto: FirstStepRegistrationDto) {
+    async createUser1(firstStepRegistrationDto: FirstStepRegistrationDto) {
         const { username, email } = firstStepRegistrationDto;
         
         const userAlreadyExists = await this.userRepository.findOne({
             where: { username },
         });
 
-        const emailAlreadyExists = await this.userRepository.findOne({
-            where: { email },
-        });
-
-        // Need to adapt this error
         if (userAlreadyExists) {
             return `User ${username} already exists.`;
         }
+
+        const emailAlreadyExists = await this.userRepository.findOne({
+            where: { email },
+        });
 
         if (emailAlreadyExists) {
             return `User ${email} already exists.`;
         }
 
-        return this.userRepository.save(firstStepRegistrationDto);
+        const user = {
+            ...firstStepRegistrationDto,
+        }
 
-        // Neet to create the 2fa secret
+        return this.userRepository.save(user);
     }
 
-    async create2(secondStepRegistrationDto: SecondtStepRegistrationDto) {
-        
+    async createUser2(secondStepRegistrationDto: SecondtStepRegistrationDto) {
+        const { id, twoFactorAuth, password } = secondStepRegistrationDto;
+
+        const userAuth = await this.userRepository.findOne({
+            where: { twoFactorAuth }
+        })
+
+        // Comparar o twoFactorAuth recebido com o que temos no BD
+
         const user = {
             ...secondStepRegistrationDto,
-            password: await bcrypt.hash(secondStepRegistrationDto.password, 10)
+            password: await bcrypt.hash(password, 10)
         }
 
         this.userRepository.save(user);
@@ -61,12 +72,26 @@ export class UserService {
         };
     }
 
-    update() {
-        return 'Atualização de usuário';
+    changePassword(changePassword: ChangePasswordDto) {
+        // Validação do 2FA 
+
+        
+
+        return 'Atualização de password';
     }
 
 
-    delete() {
-        return 'Remoção de usuário';
+    changeEmail(changeEmailDto: ChangeEmailDto) {
+        return 'Atualização de email';
+    }
+
+
+    async deleteUser(deleteUserDto: DeleteUserDto) {
+        const { id } = deleteUserDto;
+        const user = await this.userRepository.findOne({
+            where: { id }
+        })
+
+        return this.userRepository.remove(user);
     }
 }

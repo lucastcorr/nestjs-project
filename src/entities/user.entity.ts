@@ -4,7 +4,7 @@ import { Wallet } from "./wallet.entity";
 
 @Entity('users')
 export class User {
-    @PrimaryGeneratedColumn()
+    @PrimaryGeneratedColumn('uuid')
     id: string;
 
     @Column()
@@ -35,4 +35,5 @@ export class User {
 
     @OneToMany(() => Wallet, (wallet) => wallet.user)
     wallets: Wallet[];
+    cascade: true;
 }

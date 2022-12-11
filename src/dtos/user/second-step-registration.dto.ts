@@ -3,6 +3,9 @@ import { IsEmail, IsNotEmpty, IsString, MaxLength, MinLength } from "class-valid
 export class SecondtStepRegistrationDto {
     
     @IsString()
+    id: string;
+
+    @IsString()
     @IsNotEmpty()
     twoFactorAuth: string;
 
