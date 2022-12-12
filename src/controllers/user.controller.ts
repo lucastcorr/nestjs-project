@@ -25,31 +25,25 @@ export class UserController {
         return this.userService.createUser1(firstStepRegistrationDto);
     }
 
-
     @IsPublic()
     @Post('register/validate')
     create2(@Body() secondStepRegistrationDto: SecondtStepRegistrationDto) {
         return this.userService.createUser2(secondStepRegistrationDto);
     }
 
-
     @Patch('/change/password')
     updatePassword(@Body() changePasswordDto: ChangePasswordDto) {
         return this.userService.changePassword(changePasswordDto);
     }
-
 
     @Patch('/change/email')
     updateEmail(@Body() ChangeEmailDto: ChangeEmailDto) {
         return this.userService.changeEmail(ChangeEmailDto);
     }
     
-
-    @IsPublic()
-    @Delete()
+    @Delete('/delete')
     delete(@Body() deleteUserDto: DeleteUserDto) {
         return this.userService.deleteUser(deleteUserDto);
     }
 
-    
 }

@@ -1,10 +1,6 @@
 import { IsEmail, IsNotEmpty, IsString, MaxLength, MinLength } from "class-validator";
 
 export class FirstStepRegistrationDto {
-    
-    // @IsString()
-    // id: string;
-
     @IsString()
     @IsNotEmpty()
     @MinLength(6)
@@ -19,6 +15,6 @@ export class FirstStepRegistrationDto {
     @IsNotEmpty()
     phoneNumber: string;
 
-    @IsString()
-    twoFactorAuth?: string;
+    // @IsString()
+    // twoFactorAuth?: string;
 }  

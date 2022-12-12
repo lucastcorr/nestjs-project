@@ -7,9 +7,7 @@ import { AuthRequest } from './auth/models/auth-request';
 
 @Controller()
 export class AppController {
-  constructor(
-    private authService: AuthService,
-    ) {}
+  constructor (private authService: AuthService) {}
 
   @IsPublic()
   @UseGuards(/* before local-auth.guard: AuthGuard('local')*/ LocalAuthGuard)

@@ -7,11 +7,18 @@ import { SecondtStepRegistrationDto } from 'src/dtos/user/second-step-registrati
 import { FirstStepRegistrationDto } from 'src/dtos/user/first-step-registration.dto';
 import { ChangePasswordDto } from 'src/dtos/user/change-password.dto';
 import { ChangeEmailDto } from 'src/dtos/user/change-email.dto';
+import { WalletService } from './wallet.service';
+import { Wallet } from 'src/entities/wallet.entity';
 
 @Injectable()
 export class UserService {
+    constructor (private readonly walletService: WalletService) {}
+
     @Inject('USER_REPOSITORY')
     private readonly userRepository: Repository<User>;
+
+    @Inject('WALLET_REPOSITORY')
+    private readonly walletRepository: Repository<Wallet>;
 
     async findByUsername(username: string)/*: Promise<User | undefined>*/{
         const user = await this.userRepository.findOne({
@@ -23,72 +30,87 @@ export class UserService {
         };
     }
 
-
     async createUser1(firstStepRegistrationDto: FirstStepRegistrationDto) {
-        // const { username, email } = firstStepRegistrationDto;
-        
-        // const userAlreadyExists = await this.userRepository.findOne({
-        //     where: { username },
-        // });
+        const secret = 'abc123';
 
-        // if (userAlreadyExists) {
-        //     return `User ${username} already exists.`;
-        // }
+        const user = {
+            ...firstStepRegistrationDto,
+            twoFactorAuth: secret,
+        };
 
-        // const emailAlreadyExists = await this.userRepository.findOne({
-        //     where: { email },
-        // });
-
-        // if (emailAlreadyExists) {
-        //     return `User ${email} already exists.`;
-        // }
-
-        // const user = {
-        //     ...firstStepRegistrationDto,
-        // }
-
-        const user = firstStepRegistrationDto;
-
-        this.userRepository.save(user);
-
-        // 2fa
+        return this.userRepository.save(user);
     }
 
     async createUser2(secondStepRegistrationDto: SecondtStepRegistrationDto) {
         const { id, twoFactorAuth, password } = secondStepRegistrationDto;
-
-        const userAuth = await this.userRepository.findOne({
-            where: { twoFactorAuth }
+        
+        const user = await this.userRepository.findOne({
+            where: { id }
         })
 
-        // Comparar o twoFactorAuth recebido com o que temos no BD
-
-        const user = {
-            ...secondStepRegistrationDto,
-            password: await bcrypt.hash(password, 10)
+        if (user.twoFactorAuth != twoFactorAuth) {
+            this.userRepository.remove(user);
+            return 'Invalid authentication token!';
         }
 
-        this.userRepository.save(user);
+        const passwordEncrypted = await bcrypt.hash(password, 10);
+
+        await this.userRepository.update(user.id, {password: passwordEncrypted})
         
+        // await this.walletService.createWallet(user.id)
+
+        await this.walletService.createWallet(user.id);
+
         return {
             ...user,
             password: undefined,
         };
     }
 
-    changePassword(changePassword: ChangePasswordDto) {
+    async changePassword(changePasswordDto: ChangePasswordDto) {
         // Validação do 2FA 
+        const { id, twoFactorAuth, password } = changePasswordDto;
 
+        const user = await this.userRepository.findOne({
+            where: { id }
+        })
         
+        if (user.twoFactorAuth != twoFactorAuth) {
+            return 'Invalid authentication token!';
+        }
 
-        return 'Atualização de password';
+        const passwordEncrypted = await bcrypt.hash(password, 10);
+
+        await this.userRepository.update(user.id, {password: passwordEncrypted});
+
+        return {
+            ...user,
+            password: undefined,
+        };
     }
 
+    async changeEmail(changeEmailDto: ChangeEmailDto) {
+        const { id, email } = changeEmailDto;
 
-    changeEmail(changeEmailDto: ChangeEmailDto) {
-        return 'Atualização de email';
+        const emailAlreadyExists = await this.userRepository.findOne({
+            where: { email }
+        })
+
+        if (emailAlreadyExists) {
+            return 'Email already exists.';
+        }
+
+        const user = await this.userRepository.findOne({
+            where: { id }
+        })
+
+        this.userRepository.update(user.id, {email: email});
+
+        return {
+            ...user,
+            password: undefined,
+        };
     }
-
 
     async deleteUser(deleteUserDto: DeleteUserDto) {
         const { id } = deleteUserDto;
@@ -96,6 +118,10 @@ export class UserService {
             where: { id }
         })
 
+        await this.walletService.deleteWallets(id);
+
         return this.userRepository.remove(user);
     }
+
+    
 }

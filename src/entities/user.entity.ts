@@ -16,7 +16,7 @@ export class User {
     @Column()
     twoFactorAuth: string;
 
-    @Column()
+    @Column({nullable: true})
     password: string;
 
     @Column()

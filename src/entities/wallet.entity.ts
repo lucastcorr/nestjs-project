@@ -1,4 +1,4 @@
-import { BeforeInsert, Column, Entity, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { BeforeInsert, Column, CreateDateColumn, Entity, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { v4 as uuidv4 } from 'uuid';
 import { Transaction } from "./transaction.entity";
 import { User } from "./user.entity";
@@ -12,10 +12,13 @@ export class Wallet {
     userId: string;
 
     @Column()
-    amout: number;
+    amount: number;
 
     @Column()
     label: string;
+
+    @CreateDateColumn()
+    createdAt: Date;
 
     @BeforeInsert()
     generatedId() {

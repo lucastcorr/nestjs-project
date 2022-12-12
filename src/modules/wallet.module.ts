@@ -10,5 +10,6 @@ import { DatabaseModule } from './database.module';
     providers: [
         ...walletProviders,
         WalletService],
+    exports: [WalletService]
 })
 export class WalletModule {}
